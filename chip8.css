@@ -1,0 +1,100 @@
+input[type="file"]
+{
+    display: none;
+}
+
+#gamecontainer
+{
+    width: 640px;
+    height: 320px;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+#cinema_container
+{
+    border-radius: 2px;
+    width: 640px;
+    height: 367px;
+    border: none;
+    position: absolute;
+    left: calc(50% - 320px);
+    top:  calc(40% - 182px);
+	box-shadow: 5px 5px 20px black;
+}
+
+#cinema_content
+{
+    background-color: pink;
+}
+
+#game
+{
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+body
+{
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+#rcontainer
+{
+    position: relative;
+    top: 10px;
+    left: 15px;
+}
+.dirinput
+{
+    cursor: pointer;
+    opacity:.75;
+    width:25px;
+    height:19px;
+    text-align:center;
+    margin-left: 0px;
+    vertical-align:center;
+    padding-top: 4px;
+    padding-bottom: 2px;
+    background-color: #CCCCCC;
+    color:#000000;
+}
+
+#info
+{
+    cursor: pointer;
+    box-shadow: 5px 5px 5px #000000;
+    z-index: 27;
+}
+
+.dialog
+{
+    display: none;
+    float:left;
+    opacity: .95;
+    width: 330px;
+    height: 120px;
+    z-index: 28;
+    background-color: #CCC;
+    border-radius: 3;
+    box-shadow: 10px 10px 10px #000;
+    padding: 15px 15px 15px 15px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px double black;
+}
+
+.dialog_button
+{
+    cursor: pointer;
+    text-align: center;
+    width:30%;
+    border-radius: 5px;
+    border: 3px double black;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    bottom: 15px;
+}
