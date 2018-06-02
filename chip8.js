@@ -7,11 +7,7 @@
 
 'use strict';
 
-/* Node.js */
-//var fs = require('fs');
-
-var fileloaded = 0;
-
+var fileloaded = 0|0;
 var game_speed = 10|0;
 
 /* Path of file to open */
@@ -45,22 +41,19 @@ var I = (0x0)|0;
 var halt = (0x0)|0;
 
 /* Clamp to lower 16-bits and get I */
-function getI()
-{
+function getI() {
     return (I&0xFFFF)|0;
 }
 
 /* Clamp to lower 16-bits and set I */
-function setI(value)
-{
+function setI(value) {
     value = (value&0xFFFF)|0;
 
     I = value;
 }
 
 /* Use to initialize the system or reset */
-function init()
-{
+function init() {
     /* Program counter points to lowest portion of exe block */
     pc = (0x200)|0;
 
@@ -105,8 +98,7 @@ function init()
 }
 
 /* Clamp to lowest 8-bit and decrement */
-function decrement(value)
-{
+function decrement(value) {
     /* initialized all arguments here */
     value = (value)|0;
 
@@ -123,23 +115,20 @@ function decrement(value)
 }
 
 /* This operates on a 12-bit integer while increment() operates on 8-bit */
-function incrementPC()
-{
+function incrementPC() {
         /* To simulate overflow of 12-bit integers */
         pc = ((pc+2)&0xFFF)|0;
 }
 
 /* 8-bit increment */
-function increment(value)
-{
+function increment(value) {
     /* initialized all arguments here */
     value = (value)|0;
 
     return ((++value)&0xFF)|0;
 }
 
-function stack_push(value)
-{
+function stack_push(value) {
     /* initialized all arguments here */
     value = (value)|0;
 
@@ -153,8 +142,7 @@ function stack_push(value)
 }
 
 /* Pops 16bit values used for addresses */
-function stack_pop()
-{
+function stack_pop() {
     if (stack.length <= 0)
     {
         halt("No values on the stack to pop! Crashing...");
@@ -164,8 +152,7 @@ function stack_pop()
 }
 
 /* Halts cpu and returns human readable error */
-function halt(error)
-{
+function halt(error) {
     if(!error)
     {
         halt = 1;
@@ -174,8 +161,7 @@ function halt(error)
 }
 
 /* returns 8-bit value stored in register */
-function getV(number)
-{
+function getV(number) {
     /* initialized all arguments here */
     number = (number)|0;
 
@@ -188,8 +174,7 @@ function getV(number)
 }
 
 /* returns 8-bit value from memory */
-function getM(address)
-{
+function getM(address) {
     /* initialized all arguments here */
     address = (address)|0;
 
@@ -217,20 +202,16 @@ function getM(address)
     /*F*/(0xF0)|0, (0x80)|0, (0xF0)|0, (0x80)|0, (0x80)|0];
 
     /* if we are requesting the font memory then return that */
-    if (address >= 0x00 && address <= 0x1FF)
-    {
+    if (address >= 0x00 && address <= 0x1FF) {
         /* Font Memory */
         return (C[address]&0xFF)|0;
-    }
-    else
-    {
+    } else {
         /* CPU memory */
         return (memory[address]&0xFF)|0;
     }
 }
 
-function setV(number, value)
-{
+function setV(number, value) {
      /* initialized all arguments here */
     number = (number)|0;
     value = (value&0xFF)|0;
@@ -239,8 +220,7 @@ function setV(number, value)
 }
 
 /* Sets 8-bit value to memory */
-function setM(address, value)
-{
+function setM(address, value) {
     /* initialized all arguments here */
     address = (address)|0;
     value = (value)|0;
@@ -249,15 +229,13 @@ function setM(address, value)
 }
 
 /* Jumps to 12-bit address */
-function jump(address)
-{
+function jump(address) {
     /* initialized all arguments here */
     address = (address)|0;
     pc = (address&0xFFF)|0;
 }
 
-function routine(address)
-{
+function routine(address) {
     /* initialized all arguments here */
     address = (address)|0;
 
@@ -267,27 +245,22 @@ function routine(address)
 
 document.getElementById('file-input').addEventListener('change',loadROMFile, false);
 
-
-function loadROMFile(e)
-{
+function loadROMFile(e) {
     init();
 
     var file = e.target.files[0];
-    if (!file)
-    {
+    if (!file) {
         return;
     }
+    
     var reader = new FileReader();
 
-    reader.onload = function(e)
-    {
+    reader.onload = function(e) {
         var romArray = new Uint8ClampedArray(e.target.result);
 
-        (function()
-        {
+        (function() {
             /* put this rom in the memory map */
-            for(var i = 0; i < romArray.byteLength; i++)
-            {
+            for(var i = 0; i < romArray.byteLength; i++) {
                 setM(0x200 + i, romArray[i]);
             }
         })();
@@ -295,26 +268,22 @@ function loadROMFile(e)
         fileloaded = 1;
     };
 
-      reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(file);
 }
 
-function importROMFromURL(url)
-{
+function importROMFromURL(url) {
     /* Load program */
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.responseType = "arraybuffer";
-    xhr.onload = function ()
-    {
+    xhr.onload = function () {
         var romArray = new Uint8ClampedArray(xhr.response);
-        (function()
-        {
+        (function() {
             /* initialize before loading rom */
             init();
 
             /* put this rom in the memory map */
-            for(var i = 0; i < romArray.byteLength; i++)
-            {
+            for(var i = 0; i < romArray.byteLength; i++) {
                 setM(0x200 + i, romArray[i]);
             }
         })();
@@ -329,8 +298,7 @@ document.getElementById('game_selector').addEventListener('change',function(e){
     importROMFromURL(path + e.srcElement.value);
 }, false);
 
-function execute(opcode)
-{
+function execute(opcode) {
     /* initialized all arguments here */
     opcode  =   (opcode)|0;
     var nnn =   ((opcode>>>0)&0xFFF)|0; /* 0nnn */
@@ -340,18 +308,7 @@ function execute(opcode)
     var kk  =   ((opcode>>>0)&0xFF)|0;  /* 00kk */
     var prefix =((opcode>>>12)&0xF)|0   /* p000 */
 
-//    console.log("pc: " +pc+
-//                " pre: " +prefix +
-//                " nnn: " + nnn+
-//                " n: " + n+
-//                " x: " +x +
-//                " y: " +y +
-//                " kk: " + kk +
-//                "opcode: " + opcode);
-//
-
-    switch(prefix)
-    {
+    switch(prefix) {
         case 0x0:
             if(kk == 0xE0){screen.clear();}
             else if(kk == 0xEE){pc = stack_pop();}
@@ -379,95 +336,76 @@ function execute(opcode)
             break;
         case 0x8:
             if(n == 0x0){setV(x, getV(y))}
-            else if(n == 0x1){setV(x, getV(x)|getV(y))}
-            else if(n == 0x2){setV(x, getV(x)&getV(y))}
-            else if(n == 0x3){setV(x, getV(x)^getV(y))}
-            else if(n == 0x4)
-            {
+            else if(n == 0x1) { setV(x, getV(x)|getV(y)) }
+            else if(n == 0x2) { setV(x, getV(x)&getV(y)) }
+            else if(n == 0x3) { setV(x, getV(x)^getV(y)) }
+            else if(n == 0x4) {
                 /*The values of Vx and Vy are added together. If the result is greater than 8 bits (i.e., > 255,) VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.*/
-                (function()
-                {
+                (function() {
                     var temp = getV(x) + getV(y);
-                    if (temp > 0xFF)
-                    {
+                    if (temp > 0xFF) {
                         setV(0xF, 0x1); //Set Carry Flag
                     }
 
                     setV(x, temp&0xFF);
                 })();
             }
-            else if(n == 0x5)
-            {
+            else if(n == 0x5) {
                 /* If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx. */
-                (function()
-                {
+                (function() {
                     var tempy = getV(x);
                     var tempx = getV(y);
 
-                    if (tempx > tempy)  //set VF = NOT borrow.
-                    {
-                        setV(0xF, 0x1); //Set Carry Flag
+                    if (tempx > tempy)  { /* set VF = NOT borrow. */
+                        setV(0xF, 0x1); /* Set Carry Flag */
                     }
-                    else
-                    {
-                        setV(0xF, 0x0); //Clear Carry Flag
+                    else {
+                        setV(0xF, 0x0); /* Clear Carry Flag */
                     }
 
                     setV(x, (tempx - tempy)&0xFF);
 
                 })();
             }
-            else if(n == 0x6)
-            {
+            else if(n == 0x6) {
                 /* If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided(same as shift right) by 2. */
-                (function()
-                {
+                (function() {
                     var tempx = getV(x);
 
-                    if(tempx&0x1)
-                    {
-                        setV(0xF, 0x1); //Set Carry Flag
+                    if(tempx&0x1) {
+                        setV(0xF, 0x1); /* Set Carry Flag */
                     }
-                    else
-                    {
-                        setV(0xF, 0x0); //Clear Carry Flag
+                    else {
+                        setV(0xF, 0x0); /* Clear Carry Flag */
                     }
 
-                    tempx = (tempx>>>1)|0; //shift right one bit
+                    tempx = (tempx>>>1)|0; /* shift right one bit */
 
                 })();
             }
-            else if(n == 0x7)
-            {
-                (function()
-                {
+            else if(n == 0x7) {
+                (function() {
                     var tempy = getV(x);
                     var tempx = getV(y);
 
-                    if (tempy > tempx)  //set VF = NOT borrow.
-                    {
-                        setV(0xF, 0x1); //Set Carry Flag
+                    if (tempy > tempx) {  /* set VF = NOT borrow. */
+                        setV(0xF, 0x1); /* Set Carry Flag */
                     }
-                    else
-                    {
+                    else {
                         setV(0xF, 0x0); //Clear Carry Flag
                     }
 
                     setV(x, (tempy - tempx)&0xFF);
                 })();
             }
-            else if(n == 0xE)
-            {
-                (function()
-                {
+            else if(n == 0xE) {
+                (function() {
                     var tempx = getV(x);
 
-                    if(tempx&0x80)
-                    {
+                    if(tempx&0x80) {
                         setV(0xF, 0x1); //Set Carry Flag
                     }
-                    else
-                    {
+                    else {
                         setV(0xF, 0x0); //Clear Carry Flag
                     }
 
@@ -493,8 +431,7 @@ function execute(opcode)
             break;
         case 0xD:
             /* The interpreter reads n bytes from memory, starting at the address stored in I. These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). Sprites are XORed onto the existing screen. If this causes any pixels to be erased, VF is set to 1, otherwise it is set to 0. If the sprite is positioned so part of it is outside the coordinates of the display, it wraps around to the opposite side of the screen. See instruction 8xy3 for more information on XOR, and section 2.4, Display, for more information on the Chip-8 screen and sprites. */
-            (function()
-            {
+            (function() {
                 var hit;
                 var xcoor = getV(x);
                 var ycoor = getV(y);
@@ -502,78 +439,56 @@ function execute(opcode)
                 var b1;
                 var hit = 0;
 
-                (function()
-                {
+                (function() {
                     var bit;
                     var counter;
-                    for(counter = 0; counter < n; counter++)
-                    {
+                    for(counter = 0; counter < n; counter++) {
                         b0 = getM(getI()+counter);
-                        for (bit = 0; bit < 8; bit++)
-                        {
-                            if (b0 & (0x80>>>bit))
-                            {
+                        for (bit = 0; bit < 8; bit++) {
+                            if (b0 & (0x80>>>bit)) {
                                 hit = screen.set_on(bit+xcoor, counter+ycoor);
                             }
                         }
                     }
                 })();
 
-                if (hit)
-                {
+                if (hit) {
                     setV(0xF, 0x1); //Set Carry Flag
                 }
-                else
-                {
+                else {
                     setV(0xF, 0x0); //Clear Carry Flag
                 }
             })();
             break;
         case 0xE:
-            if(kk == 0x9E)
-            {
+            if(kk == 0x9E) {
                 //if (getV(x) == pollInput()){ incrementPC();}
             }
-            if(kk == 0xA1)
-            {
+            if(kk == 0xA1) {
                 //if (getV(x) != pollInput()){ incrementPC();}
                 incrementPC();
             }
             break;
         case 0xF:
-            if(kk == 0x07)
-            {
+            if(kk == 0x07) {
                 setV(x, cpu_tick);
-            }
-            else if(kk == 0x0A)
-            {
+            } else if(kk == 0x0A) {
                 setV(x, pollInput());
-            }
-            else if(kk == 0x15)
-            {
+            } else if(kk == 0x15) {
                 cpu_tick = getV(x);
-            }
-            else if(kk == 0x18)
-            {
+            } else if(kk == 0x18) {
                 snd_tick = getV(x);
-            }
-            else if(kk == 0x1E)
-            {
+            } else if(kk == 0x1E) {
                 setI(getV(x) + getI());
-            }
-            else if(kk == 0x29)
-            {
+            } else if(kk == 0x29) {
                 /* Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font. */
                 setI(getV(x)*5);
-            }
-            else if(kk == 0x33)
-            {
+            } else if(kk == 0x33) {
                 /* Store BCD representation of Vx in memory locations I, I+1, and I+2.
 
                 The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2. */
 
-                (function()
-                {
+                (function() {
                     var r0 = (getV(x)/100)|0;
                     var r1 = ((getV(x)/10)%10)|0;
                     var r2 = ((getV(x)%100)%10)|0;
@@ -582,20 +497,15 @@ function execute(opcode)
                     setM(getI()+2, r2|0);
                 })();
 
-            }
-            else if(kk == 0x55)
-            {
+            } else if(kk == 0x55) {
                 /* Stores V0 to VX in memory starting at address I.[4] */
-                for(var counter = 0x0; counter <= x; counter++)
-                {
+                for(var counter = 0x0; counter <= x; counter++) {
                     setM(getI()+counter, getV(counter));
                 }
             }
-            else if(kk == 0x65)
-            {
+            else if(kk == 0x65) {
                 /* Fills V0 to VX with values from memory starting at address I.[4] */
-                for(var counter = 0x0; counter <= x; counter++)
-                {
+                for(var counter = 0x0; counter <= x; counter++) {
                     setV(counter, getM(getI()+counter));
                 }
             }
@@ -606,8 +516,7 @@ function execute(opcode)
     cpu_tick = decrement(cpu_tick);
 }
 
-function fetch()
-{
+function fetch() {
     var b0 = getM(pc+0)<<8;
     var b1 = getM(pc+1);
 
@@ -621,20 +530,17 @@ function fetch()
 }
 
 /* non-blocking */
-function pollInput()
-{
+function pollInput() {
     /* stub */
 }
 
 /* blocking */
-function blockingPollInput()
-{
+function blockingPollInput() {
     /* Discard previous input */
     input = (-1)|0;
     var r_val;
 
-    setInterval(function()
-    {
+    setInterval(function() {
         if(input > -1)
         {
             r_val = input;
@@ -650,15 +556,11 @@ var ticks = 0;
 var screen = new Screen("game", 64, 32, 10);
 init();
 
-function main()
-{
+function main() {
     var opcode;
-    setInterval(function()
-    {
-        if(fileloaded)
-        {
-            do
-            {
+    setInterval(function() {
+        if(fileloaded) {
+            do {
                 opcode = fetch();
                 execute(opcode);
                 ticks++;
@@ -667,8 +569,7 @@ function main()
             screen.render();
 
             /* Critical error occured halt execution cycle! */
-            if (halt)
-            {
+            if (halt) {
                 console.log(halt);
                 this_is_not_a_valid_function();
             }
@@ -678,33 +579,5 @@ function main()
 }
 
 importROMFromURL(url);
-
-/* Load local file located at path and store in memory at address 0x20-0xFFF */
-//
-///* node */
-//function loadFile(path)
-//{
-//    var bytes_read = 0;
-//    var i = 0;
-//    var bytes;
-//    var fd = 0;
-//
-//    fd = fs.openSync(path, 'r');
-//    var buffer = new Buffer(2);
-//
-//    if (fd)
-//    {
-//        do
-//        {
-//            bytes_read = fs.readSync(fd, buffer, 0x0, 0x1, i);
-//            setM(0x200+i, buffer.readUInt8());
-//            i += bytes_read;
-//        } while (bytes_read)
-//    }
-//
-//    bytes = i;
-//
-//    return bytes;
-//}
 
 main();
